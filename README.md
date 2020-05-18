@@ -24,3 +24,16 @@ export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_181.jdk/Contents/Hom
 export SCALA_HOME=/usr/local/scala/
 export PATH=$JAVA_HOME/bin:$SPARK_HOME/bin:$SCALA_HOME/bin:$PATH
 ```
+
+# Running the server and checking the Producer
+you can run the server with the following command
+```
+python kakfa_server.py
+```
+then you can verify the topic with the built-in kafka-console-consumer
+```
+kafka-console-consumer --bootstrap-server localhost:9092 --topic org.sanfranciscopolice.stats.calls
+```
+You will see an output like this
+
+![kakfa console consumer](images/producer_output_with_kakfa-console-consumer.png)
