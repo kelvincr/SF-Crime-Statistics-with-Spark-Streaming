@@ -1,9 +1,9 @@
 from kafka import KafkaProducer
-from confluent_kafka.admin import AdminClient, NewTopic
 import logging
 import json
 import time
 import datetime
+from utils import KakfaClient
 
 logger = logging.getLogger(__name__)
 logging.getLogger("kafka.conn").setLevel('ERROR')
@@ -17,10 +17,10 @@ class ProducerServer(KafkaProducer):
         self.topic = topic
         self.num_partitions = num_partitions
         self.num_replicas = num_replicas
-        client = AdminClient({"bootstrap.servers": kwargs.get('bootstrap_servers')})
-        exists = self.topic_exists(client)
+        client = KakfaClient(kwargs.get('bootstrap_servers'))
+        exists = client.topic_exists(topic)
         if exists is False:
-            self.create_topic(client, self.topic)
+            client.create_topic(self.topic, num_partitions, num_replicas)
 
     def read_file(self):
         """
@@ -43,20 +43,3 @@ class ProducerServer(KafkaProducer):
     @staticmethod
     def dict_to_binary(json_dict):
         return json.dumps(json_dict).encode("utf-8")
-
-    def topic_exists(self, client):
-        """Checks if the given topic exists"""
-        topic_metadata = client.list_topics(timeout=5)
-        return topic_metadata.topics.get(self.topic) is not None
-
-    def create_topic(self, client, topic_name):
-        """Creates the producer topic"""
-        futures = client.create_topics(
-            [NewTopic(topic=topic_name, num_partitions=self.num_partitions, replication_factor=self.num_replicas)]
-        )
-        for _, future in futures.items():
-            try:
-                future.result()
-                logger.info(f"kafka topic {self.topic} created")
-            except Exception as e:
-                logger.info(f"topic creation kafka failed {self.topic} with exception: {e}")
