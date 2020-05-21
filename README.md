@@ -59,3 +59,19 @@ Finally, the Spark UI, is available in the port 3000, it can be configure in the
 It is a useful tool, to explore your Spark cluster, including running jobs, executors, queries.
 ![spark_ui](images/spark_ui.png)
 
+# Optimizing the Spark app.
+1. How did changing values on the SparkSession property parameters affect the throughput and latency of the data?
+
+After changing the `processedRowsPerSecond` changed so if we have a higher value in this value the throughput is better. Also the `numInputRows` changed.
+
+
+2. What were the 2-3 most efficient SparkSession property key/value pairs? Through testing multiple variations on values, how can you tell these were the most optimal?
+```python
+        .option("maxOffsetPerTrigger", 100) \
+        .option("maxRatePerPartition", 200) \
+```
+The process rows per second went from 171, in the previous configuration to 421.
+While the number of partitions in the topic itself is not part of the SparkSession, It also helps with the performance of the Spark App. 
+
+![spark_performance](images/changing_spark_session_options_best.png)
+        
