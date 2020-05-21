@@ -24,6 +24,12 @@ export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_181.jdk/Contents/Hom
 export SCALA_HOME=/usr/local/scala/
 export PATH=$JAVA_HOME/bin:$SPARK_HOME/bin:$SCALA_HOME/bin:$PATH
 ```
+if you need to startup zookeeper and kafka, you can use the following commands on linux to startup the services after installation.
+```
+/usr/bin/zookeeper-server-start config/zookeeper.properties
+/usr/bin/kafka-server-start config/server.properties
+```
+
 
 # Running the server and checking the Producer
 you can run the server with the following command
